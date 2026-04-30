@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Марина — Эксперт по недвижимости и финансам</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              deep:    '#004D40',
+              mid:     '#00695C',
+              light:   '#00897B',
+              faint:   '#E0F2F1',
+            },
+            gold: {
+              DEFAULT: '#C5A059',
+              light:   '#D4B87A',
+              pale:    '#F5EDD8',
+              dark:    '#9C7C3A',
+            },
+            ink: '#0D1B18',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            body:    ['"Jost"', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Jost', sans-serif; background: #fafaf8; color: #0D1B18; }
+
+    /* ── Gold divider line ── */
+    .gold-rule {
+      display: block;
+      width: 64px;
+      height: 2px;
+      background: linear-gradient(90deg, #C5A059, #D4B87A, #C5A059);
+      margin: 0 auto;
+    }
+
+    /* ── Art-deco corner ornament ── */
+    .corner-ornament::before,
+    .corner-ornament::after {
+      content: '';
+      position: absolute;
+      width: 32px; height: 32px;
+      border-color: #C5A059;
+      border-style: solid;
+      opacity: 0.6;
+    }
+    .corner-ornament::before { top: 16px; left: 16px; border-width: 2px 0 0 2px; }
+    .corner-ornament::after  { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; }
+
+    /* ── Noise texture overlay ── */
+    .noise-overlay {
+      position: relative;
+    }
+    .noise-overlay::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Hero background ── */
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 80% 60% at 110% 40%, rgba(197,160,89,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at -10% 70%, rgba(0,105,92,0.25) 0%, transparent 55%),
+        linear-gradient(155deg, #004D40 0%, #00352C 55%, #001F1A 100%);
+    }
+
+    /* ── Diagonal separator ── */
+    .diagonal-cut {
+      clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+    }
+
+    /* ── Service cards ── */
+    .service-card {
+      border: 1px solid rgba(197,160,89,0.2);
+      transition: transform 0.35s cubic-bezier(.22,.68,0,1.2),
+                  box-shadow 0.35s ease,
+                  border-color 0.3s ease;
+      cursor: default;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -12px rgba(0,77,64,0.18), 0 0 0 1px rgba(197,160,89,0.35);
+      border-color: rgba(197,160,89,0.55);
+    }
+    .service-card:hover .card-icon-wrap {
+      background: #004D40;
+    }
+    .service-card:hover .card-icon-wrap svg {
+      color: #C5A059;
+    }
+
+    /* ── Stat counter boxes ── */
+    .stat-box {
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(180deg, #C5A059, #D4B87A);
+    }
+
+    /* ── Fade-in on scroll (JS progressive enhancement) ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── WhatsApp button glow ── */
+    .wa-button {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      box-shadow: 0 8px 32px rgba(37,211,102,0.4);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .wa-button:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 16px 40px rgba(37,211,102,0.55);
+    }
+
+    /* ── Nav scroll effect ── */
+    #navbar {
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(0,53,44,0.97) !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Decorative large letter */
+    .deco-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 220px;
+      line-height: 1;
+      color: rgba(197,160,89,0.07);
+      position: absolute;
+      top: -20px; right: -20px;
+      pointer-events: none;
+      user-select: none;
+      font-weight: 700;
+    }
+
+    /* Quote mark */
+    .open-quote::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      color: #C5A059;
+      line-height: 0;
+      vertical-align: -2.2rem;
+      margin-right: 4px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+    .float-anim { animation: float 5s ease-in-out infinite; }
+
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .gold-shimmer {
+      background: linear-gradient(90deg, #C5A059 30%, #F5E7C0 50%, #C5A059 70%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+
+<!-- ════════════════════════════════
+     NAVBAR
+════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-3 group">
+      <span class="w-9 h-9 rounded-full flex items-center justify-center"
+            style="background:linear-gradient(135deg,#C5A059,#9C7C3A)">
+        <span class="font-display text-white font-bold text-base">М</span>
+      </span>
+      <span class="font-display text-white text-xl font-semibold tracking-wide">Марина</span>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="hidden md:flex items-center gap-8 font-body text-sm font-medium tracking-widest uppercase text-white/75">
+      <li><a href="#about"    class="hover:text-gold-light transition-colors">Обо мне</a></li>
+      <li><a href="#services" class="hover:text-gold-light transition-colors">Услуги</a></li>
+      <li><a href="#contact"  class="hover:text-gold-light transition-colors">Контакты</a></li>
+    </ul>
+
+    <!-- CTA -->
+    <a href="https://wa.me/79174387460" target="_blank"
+       class="hidden md:flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold font-body border border-gold-DEFAULT/60 text-gold-light hover:bg-gold-DEFAULT hover:text-white transition-all duration-300">
+      <i data-lucide="message-circle" class="w-4 h-4"></i>
+      WhatsApp
+    </a>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section id="hero" class="hero-bg diagonal-cut noise-overlay min-h-screen flex items-center relative overflow-hidden pt-24 pb-32">
+
+  <!-- Decorative circles -->
+  <div class="absolute top-1/4 right-0 w-96 h-96 rounded-full opacity-10 float-anim"
+       style="background:radial-gradient(circle,#C5A059,transparent 70%);transform-origin:center;"></div>
+  <div class="absolute bottom-16 left-0 w-64 h-64 rounded-full opacity-8"
+       style="background:radial-gradient(circle,#00897B,transparent 70%);"></div>
+
+  <!-- Art-deco grid lines -->
+  <div class="absolute inset-0 pointer-events-none" style="z-index:1">
+    <div class="absolute top-0 left-1/3 w-px h-full bg-gradient-to-b from-transparent via-gold-DEFAULT/15 to-transparent"></div>
+    <div class="absolute top-0 left-2/3 w-px h-full bg-gradient-to-b from-transparent via-gold-DEFAULT/8 to-transparent"></div>
+  </div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6 md:px-12 w-full">
+    <div class="max-w-2xl">
+
+      <!-- Badge -->
+      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
+           style="background:rgba(197,160,89,0.15);border:1px solid rgba(197,160,89,0.35);">
+        <span class="w-2 h-2 rounded-full bg-gold-DEFAULT animate-pulse"></span>
+        <span class="font-body text-xs tracking-[0.2em] uppercase text-gold-light font-medium">Эксперт &bull; 20 лет практики</span>
+      </div>
+
+      <!-- Main headline -->
+      <h1 class="reveal font-display text-white leading-[1.05] mb-6" style="font-size:clamp(2.6rem,6vw,4.2rem);font-weight:600;">
+        Экспертная<br />
+        <span class="gold-shimmer">недвижимость:</span><br />
+        <em class="font-light not-italic" style="color:rgba(255,255,255,0.85)">Финансовый подход</em>
+      </h1>
+
+      <!-- Sub -->
+      <p class="reveal font-body text-white/65 text-lg leading-relaxed mb-10 max-w-xl" style="font-weight:300;">
+        Банкир, бухгалтер, страховой эксперт и риэлтор в одном лице.
+        Каждая сделка — это продуманная финансовая стратегия.
+      </p>
+
+      <!-- Stat row -->
+      <div class="reveal flex flex-wrap gap-6 mb-10">
+        <div class="stat-box pl-5 py-1">
+          <p class="font-display text-3xl font-semibold text-gold-light">20+</p>
+          <p class="font-body text-xs text-white/50 tracking-wider uppercase">Лет опыта</p>
+        </div>
+        <div class="stat-box pl-5 py-1">
+          <p class="font-display text-3xl font-semibold text-gold-light">500+</p>
+          <p class="font-body text-xs text-white/50 tracking-wider uppercase">Закрытых сделок</p>
+        </div>
+        <div class="stat-box pl-5 py-1">
+          <p class="font-display text-3xl font-semibold text-gold-light">4</p>
+          <p class="font-body text-xs text-white/50 tracking-wider uppercase">Направления</p>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="reveal flex flex-wrap gap-4">
+        <a href="https://wa.me/79174387460" target="_blank"
+           class="wa-button flex items-center gap-3 px-7 py-4 rounded-full text-white font-body font-semibold text-sm tracking-wide">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Написать в WhatsApp
+        </a>
+        <a href="#services"
+           class="flex items-center gap-2 px-7 py-4 rounded-full font-body font-medium text-sm text-white/80 border border-white/20 hover:border-gold-DEFAULT/60 hover:text-gold-light transition-all duration-300">
+          Мои услуги
+          <i data-lucide="arrow-down" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     ABOUT
+════════════════════════════════ -->
+<section id="about" class="py-24 md:py-32 bg-white relative overflow-hidden">
+
+  <span class="deco-letter select-none">М</span>
+
+  <div class="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
+
+    <!-- Section label -->
+    <div class="reveal text-center mb-16">
+      <span class="font-body text-xs tracking-[0.25em] uppercase text-emerald-mid font-semibold">— Обо мне —</span>
+      <h2 class="font-display text-4xl md:text-5xl font-semibold text-ink mt-3">
+        Финансовый <em>эксперт</em><br class="hidden md:block"/>в мире недвижимости
+      </h2>
+      <span class="gold-rule mt-5 mb-0"></span>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+
+      <!-- Portrait placeholder with ornamental frame -->
+      <div class="reveal flex justify-center order-2 md:order-1">
+        <div class="relative corner-ornament" style="width:320px;height:400px;">
+          <!-- Frame -->
+          <div class="absolute inset-4 rounded-2xl overflow-hidden"
+               style="background:linear-gradient(155deg,#004D40 0%,#00352C 100%);">
+            <!-- Initials monogram when no photo -->
+            <div class="w-full h-full flex flex-col items-center justify-center gap-4">
+              <div class="w-28 h-28 rounded-full flex items-center justify-center border-4 border-gold-DEFAULT/50"
+                   style="background:rgba(197,160,89,0.15)">
+                <span class="font-display text-5xl text-gold-DEFAULT font-semibold">М</span>
+              </div>
+              <p class="font-display text-white/80 text-xl tracking-wide">Марина</p>
+              <div class="w-12 h-px bg-gold-DEFAULT/50"></div>
+              <p class="font-body text-xs text-white/40 tracking-widest uppercase">Эксперт</p>
+            </div>
+          </div>
+          <!-- Gold tag -->
+          <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full font-body text-xs font-semibold tracking-wider text-white whitespace-nowrap"
+               style="background:linear-gradient(90deg,#C5A059,#9C7C3A)">
+            20 лет в профессии
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio text -->
+      <div class="reveal order-1 md:order-2 space-y-6">
+
+        <p class="font-display text-2xl md:text-3xl text-ink leading-snug font-light open-quote">
+          Ваша сделка с недвижимостью — это прежде всего финансовое решение.
+        </p>
+
+        <p class="font-body text-gray-600 leading-relaxed" style="font-weight:300;">
+          Моя карьера началась в банковской сфере, где я глубоко изучила механизмы кредитования, ипотечного финансирования и управления капиталом. Параллельно я получила квалификацию бухгалтера и страхового эксперта — это позволяет мне видеть каждую сделку с недвижимостью комплексно.
+        </p>
+
+        <p class="font-body text-gray-600 leading-relaxed" style="font-weight:300;">
+          Сегодня я объединяю все эти компетенции, помогая клиентам принимать взвешенные решения: от выбора объекта и ипотечной программы до бухгалтерского сопровождения и страховой защиты.
+        </p>
+
+        <!-- Competences -->
+        <div class="grid grid-cols-2 gap-3 pt-4">
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-emerald-faint">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-mid/15">
+              <i data-lucide="landmark" class="w-4 h-4 text-emerald-mid"></i>
+            </div>
+            <span class="font-body text-sm text-ink font-medium">Банковское дело</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-gold-pale">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gold-DEFAULT/20">
+              <i data-lucide="calculator" class="w-4 h-4 text-gold-dark"></i>
+            </div>
+            <span class="font-body text-sm text-ink font-medium">Бухгалтерия</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-emerald-faint">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-mid/15">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-mid"></i>
+            </div>
+            <span class="font-body text-sm text-ink font-medium">Страхование</span>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-gold-pale">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gold-DEFAULT/20">
+              <i data-lucide="building-2" class="w-4 h-4 text-gold-dark"></i>
+            </div>
+            <span class="font-body text-sm text-ink font-medium">Риэлторство</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     SERVICES
+════════════════════════════════ -->
+<section id="services" class="py-24 md:py-32 relative overflow-hidden"
+         style="background:linear-gradient(160deg,#fafaf8 0%,#f0f7f6 100%);">
+
+  <!-- Subtle pattern -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none"
+       style="background-image:repeating-linear-gradient(45deg,rgba(0,77,64,0.04) 0,rgba(0,77,64,0.04) 1px,transparent 0,transparent 50%);background-size:28px 28px;"></div>
+
+  <div class="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
+
+    <!-- Section label -->
+    <div class="reveal text-center mb-16">
+      <span class="font-body text-xs tracking-[0.25em] uppercase text-emerald-mid font-semibold">— Услуги —</span>
+      <h2 class="font-display text-4xl md:text-5xl font-semibold text-ink mt-3">
+        Что я предлагаю
+      </h2>
+      <span class="gold-rule mt-5"></span>
+    </div>
+
+    <!-- Services grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- Card 1: New Buildings -->
+      <div class="reveal service-card bg-white rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-5"
+             style="background:#004D40;"></div>
+        <div class="card-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300"
+             style="background:#E0F2F1;">
+          <i data-lucide="building" class="w-5 h-5 text-emerald-mid transition-colors duration-300"></i>
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-2">Новостройки</h3>
+          <p class="font-body text-sm text-gray-500 leading-relaxed" style="font-weight:300;">
+            Подбор квартир в новых жилых комплексах от надёжных застройщиков. Анализ инвестиционного потенциала и сопровождение сделки под ключ.
+          </p>
+        </div>
+        <div class="mt-auto flex items-center gap-2 text-emerald-mid text-sm font-body font-medium">
+          <span>Подробнее</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </div>
+      </div>
+
+      <!-- Card 2: Mortgage -->
+      <div class="reveal service-card bg-white rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden" style="transition-delay:.08s">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-5"
+             style="background:#C5A059;"></div>
+        <div class="card-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300"
+             style="background:#F5EDD8;">
+          <i data-lucide="percent" class="w-5 h-5 text-gold-dark transition-colors duration-300"></i>
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-2">Ипотека</h3>
+          <p class="font-body text-sm text-gray-500 leading-relaxed" style="font-weight:300;">
+            Подбор оптимальной ипотечной программы с учётом вашего финансового профиля. Помогу получить одобрение на лучших условиях.
+          </p>
+        </div>
+        <div class="mt-auto flex items-center gap-2 text-gold-dark text-sm font-body font-medium">
+          <span>Подробнее</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </div>
+      </div>
+
+      <!-- Card 3: Secondary Market -->
+      <div class="reveal service-card bg-white rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden" style="transition-delay:.16s">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-5"
+             style="background:#004D40;"></div>
+        <div class="card-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300"
+             style="background:#E0F2F1;">
+          <i data-lucide="key-round" class="w-5 h-5 text-emerald-mid transition-colors duration-300"></i>
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-2">Вторичный рынок</h3>
+          <p class="font-body text-sm text-gray-500 leading-relaxed" style="font-weight:300;">
+            Покупка и продажа квартир на вторичном рынке. Юридическая проверка объектов, переговоры и безопасное оформление сделки.
+          </p>
+        </div>
+        <div class="mt-auto flex items-center gap-2 text-emerald-mid text-sm font-body font-medium">
+          <span>Подробнее</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </div>
+      </div>
+
+      <!-- Card 4: Accounting -->
+      <div class="reveal service-card bg-white rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden" style="transition-delay:.24s">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-full opacity-5"
+             style="background:#C5A059;"></div>
+        <div class="card-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300"
+             style="background:#F5EDD8;">
+          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-gold-dark transition-colors duration-300"></i>
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-2">Бухгалтерские услуги</h3>
+          <p class="font-body text-sm text-gray-500 leading-relaxed" style="font-weight:300;">
+            Налоговые декларации, налоговые вычеты при покупке жилья, ведение бухгалтерии для ИП и собственников бизнеса.
+          </p>
+        </div>
+        <div class="mt-auto flex items-center gap-2 text-gold-dark text-sm font-body font-medium">
+          <span>Подробнее</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Trust strip -->
+    <div class="reveal mt-14 grid sm:grid-cols-3 gap-6 text-center">
+      <div class="flex flex-col items-center gap-2 py-6 px-4 rounded-2xl"
+           style="background:rgba(0,77,64,0.05);border:1px solid rgba(0,77,64,0.1);">
+        <i data-lucide="shield" class="w-6 h-6 text-emerald-mid"></i>
+        <p class="font-body text-sm font-medium text-ink">Юридическая чистота</p>
+        <p class="font-body text-xs text-gray-400">Полная проверка документов</p>
+      </div>
+      <div class="flex flex-col items-center gap-2 py-6 px-4 rounded-2xl"
+           style="background:rgba(197,160,89,0.08);border:1px solid rgba(197,160,89,0.2);">
+        <i data-lucide="handshake" class="w-6 h-6 text-gold-dark"></i>
+        <p class="font-body text-sm font-medium text-ink">Личное сопровождение</p>
+        <p class="font-body text-xs text-gray-400">На каждом этапе сделки</p>
+      </div>
+      <div class="flex flex-col items-center gap-2 py-6 px-4 rounded-2xl"
+           style="background:rgba(0,77,64,0.05);border:1px solid rgba(0,77,64,0.1);">
+        <i data-lucide="trending-up" class="w-6 h-6 text-emerald-mid"></i>
+        <p class="font-body text-sm font-medium text-ink">Финансовая выгода</p>
+        <p class="font-body text-xs text-gray-400">Максимальная доходность</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     TESTIMONIAL / QUOTE BAND
+════════════════════════════════ -->
+<section class="py-20 relative overflow-hidden"
+         style="background:linear-gradient(135deg,#004D40,#00352C);">
+  <div class="absolute inset-0 pointer-events-none"
+       style="background-image:repeating-linear-gradient(90deg,rgba(197,160,89,0.05) 0,rgba(197,160,89,0.05) 1px,transparent 0,transparent 80px);"></div>
+
+  <div class="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10">
+    <div class="reveal">
+      <i data-lucide="quote" class="w-10 h-10 text-gold-DEFAULT mx-auto mb-6 opacity-60"></i>
+      <p class="font-display text-2xl md:text-3xl text-white/90 leading-relaxed italic font-light">
+        Недвижимость — это не просто квадратные метры. Это капитал, который должен работать на вас. Моя задача — сделать так, чтобы каждая ваша инвестиция была максимально эффективной.
+      </p>
+      <div class="w-16 h-px bg-gold-DEFAULT mx-auto mt-8 mb-4"></div>
+      <p class="font-body text-gold-light tracking-widest text-sm uppercase font-medium">Марина — Эксперт по недвижимости</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     CONTACT / FOOTER
+════════════════════════════════ -->
+<footer id="contact" class="relative overflow-hidden"
+        style="background:linear-gradient(170deg,#001F1A 0%,#000D0A 100%);">
+
+  <!-- Top gold bar -->
+  <div class="h-px w-full" style="background:linear-gradient(90deg,transparent,#C5A059,transparent);"></div>
+
+  <div class="max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-28">
+
+    <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+
+      <!-- Left: CTA -->
+      <div class="reveal space-y-6">
+        <span class="font-body text-xs tracking-[0.25em] uppercase text-gold-DEFAULT font-medium">— Связаться —</span>
+        <h2 class="font-display text-4xl md:text-5xl text-white leading-tight font-semibold">
+          Готовы сделать<br /><span class="gold-shimmer">первый шаг?</span>
+        </h2>
+        <p class="font-body text-white/50 text-lg leading-relaxed" style="font-weight:300;">
+          Напишите мне в WhatsApp — отвечу в течение нескольких минут и проведу бесплатную первичную консультацию.
+        </p>
+
+        <!-- Big WA button -->
+        <a href="https://wa.me/79174387460" target="_blank"
+           class="wa-button inline-flex items-center gap-4 px-8 py-5 rounded-2xl text-white font-body font-semibold text-base">
+          <svg class="w-7 h-7 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          <div class="text-left">
+            <p class="text-base font-semibold">Написать в WhatsApp</p>
+            <p class="text-green-200 text-xs font-normal">+7 (917) 438-74-60</p>
+          </div>
+        </a>
+
+        <p class="font-body text-white/30 text-sm">
+          Бесплатная консультация · Без обязательств
+        </p>
+      </div>
+
+      <!-- Right: Contact card -->
+      <div class="reveal">
+        <div class="rounded-3xl p-8 relative overflow-hidden corner-ornament"
+             style="background:rgba(255,255,255,0.04);border:1px solid rgba(197,160,89,0.2);">
+
+          <h3 class="font-display text-2xl text-white mb-8 font-semibold">Контактная информация</h3>
+
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
+                   style="background:rgba(197,160,89,0.15);">
+                <i data-lucide="phone" class="w-5 h-5 text-gold-light"></i>
+              </div>
+              <div>
+                <p class="font-body text-xs text-white/40 uppercase tracking-wider mb-1">Телефон / WhatsApp</p>
+                <a href="tel:+79174387460" class="font-body text-white font-medium hover:text-gold-light transition-colors text-lg">
+                  +7 (917) 438-74-60
+                </a>
+              </div>
+            </div>
+
+            <div class="h-px" style="background:rgba(197,160,89,0.12);"></div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
+                   style="background:rgba(197,160,89,0.15);">
+                <i data-lucide="briefcase" class="w-5 h-5 text-gold-light"></i>
+              </div>
+              <div>
+                <p class="font-body text-xs text-white/40 uppercase tracking-wider mb-1">Специализация</p>
+                <p class="font-body text-white font-medium">Недвижимость &amp; Финансы</p>
+              </div>
+            </div>
+
+            <div class="h-px" style="background:rgba(197,160,89,0.12);"></div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
+                   style="background:rgba(197,160,89,0.15);">
+                <i data-lucide="clock" class="w-5 h-5 text-gold-light"></i>
+              </div>
+              <div>
+                <p class="font-body text-xs text-white/40 uppercase tracking-wider mb-1">Режим работы</p>
+                <p class="font-body text-white font-medium">Ежедневно, 9:00 — 21:00</p>
+              </div>
+            </div>
+
+            <div class="h-px" style="background:rgba(197,160,89,0.12);"></div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center"
+                   style="background:rgba(197,160,89,0.15);">
+                <i data-lucide="star" class="w-5 h-5 text-gold-light"></i>
+              </div>
+              <div>
+                <p class="font-body text-xs text-white/40 uppercase tracking-wider mb-1">Опыт</p>
+                <p class="font-body text-white font-medium">20+ лет в недвижимости и финансах</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-full flex items-center justify-center"
+              style="background:linear-gradient(135deg,#C5A059,#9C7C3A)">
+          <span class="font-display text-white font-bold text-xs">М</span>
+        </span>
+        <span class="font-display text-white/60 text-sm">Марина — Эксперт по недвижимости</span>
+      </div>
+      <p class="font-body text-white/25 text-xs">© 2024 · Все права защищены</p>
+    </div>
+
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════
+     FLOATING WA BUTTON (mobile)
+════════════════════════════════ -->
+<a href="https://wa.me/79174387460" target="_blank"
+   class="fixed bottom-6 right-6 z-50 md:hidden wa-button w-14 h-14 rounded-full flex items-center justify-center shadow-2xl">
+  <svg class="w-7 h-7" fill="white" viewBox="0 0 24 24">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+
+<script>
+  // Init Lucide icons
+  lucide.createIcons();
+
+  // Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+    { threshold: 0.12 }
+  );
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
